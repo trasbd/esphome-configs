@@ -47,7 +47,7 @@ text_sensor:
   - platform: template
     name: RED OUTPUT TEXT
     lambda: |-
-      return id(output_red).state;
+      return id(red_num).state + " " + id(green_num).state;
 
 # esp32_camera_web_server:
 #   - port: 8080
@@ -116,14 +116,7 @@ switch:
           # List of bytes to write.
           value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
 
-number:
-  - platform: template
-    name: Red Number
-    id: red_num
-    min_value: 0
-    max_value: 255
-    step: 1
-    optimistic: True
+
 
 button:
   - platform: restart
@@ -142,32 +135,62 @@ button:
             service_uuid: "FFF0"
             characteristic_uuid: "FFF3"
             # List of bytes to write.
-            #value: [0x7e, 00, 05, 03, 0xff, 00, 00, 00, 0xef]
+            #value: [0x7e, 00, 05, 03, R, G, B, 00, 0xef]
             value: !lambda |-
-              return {0x7e, 00, 05, 03, id(output_red).state, id(output_green).state, id(output_blue).state, 00, 0xef};
-
-output:
-  - platform: template
-    id: output_red
-    type: float
-    write_action:
-      - button.press: set_color
-
-  - platform: template
-    id: output_green
-    type: float
-    write_action:
-      - button.press: set_color
-
-  - platform: template
-    id: output_blue
-    type: float
-    write_action:
-      - button.press: set_color
-
+              return {0x7e, 00, 05, 03, id(red_num).state, id(green_num).state, id(blue_num).state, 00, 0xef};
 light:
   - platform: rgb
     name: "RGB LED BAR"
     red: output_red
     green: output_green
     blue: output_blue
+    on_state: 
+      then:
+        - button.press: set_color
+
+output:
+  - platform: template
+    id: output_red
+    type: float
+    write_action:
+      - number.set: 
+          id: red_num
+          value: !lambda return state;
+
+  - platform: template
+    id: output_green
+    type: float
+    write_action:
+      - number.set: 
+          id: green_num
+          value: !lambda return state;
+
+  - platform: template
+    id: output_blue
+    type: float
+    write_action:
+      - number.set: 
+          id: blue_num
+          value: !lambda return state;
+
+number:
+  - platform: template
+    id: red_num
+    min_value: 0
+    max_value: 255
+    step: 1
+    optimistic: True
+
+  - platform: template
+    id: green_num
+    min_value: 0
+    max_value: 255
+    step: 1
+    optimistic: True
+
+  - platform: template
+    id: blue_num
+    min_value: 0
+    max_value: 255
+    step: 1
+    optimistic: True
