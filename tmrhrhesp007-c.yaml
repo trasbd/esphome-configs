@@ -150,7 +150,7 @@ output:
     write_action:
       - number.set: 
           id: red_num
-          value: !lambda return state;
+          value: !lambda return state*255;
 
   - platform: template
     id: output_green
@@ -158,7 +158,7 @@ output:
     write_action:
       - number.set: 
           id: green_num
-          value: !lambda return state;
+          value: !lambda return state*255;
 
   - platform: template
     id: output_blue
@@ -166,7 +166,7 @@ output:
     write_action:
       - number.set: 
           id: blue_num
-          value: !lambda return state;
+          value: !lambda return state*255;
 
 number:
   - platform: template
