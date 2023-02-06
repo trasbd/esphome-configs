@@ -87,44 +87,39 @@ ble_client:
     on_disconnect: 
         - esp32_ble_tracker.start_scan:
 
-switch:
-  - platform: template
-    name: "LED Bar"
-    id: led_bar_switch
-    assumed_state: true
-    turn_on_action:
-      - lambda: |-
-            id(led_bar_switch).publish_state(true);
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          value: [0x7e, 00, 04, 01, 00, 00, 00, 00, 0xef]
-    turn_off_action:
-      - lambda: |-
-          id(led_bar_switch).publish_state(false);
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
-
-
-
 button:
   - platform: restart
     name: "TMRHRHESP007 Restart"
   # - platform: shutdown
   #   name: "TMRHRHESP007 Shutdown"
 
-  - platform: template
-    name: "TMRHRHESP007 Set Color"
-    id: set_color
-    on_press:
+light:
+  - platform: rgb
+    name: "TMRHRHESP007 LED Bar"
+    id: led_bar_light
+    red: output_red
+    green: output_green
+    blue: output_blue
+    on_turn_on:
+      - lambda: |-
+            id(led_bar_light).publish_state(true);
+      - ble_client.ble_write:
+          id: led_bar
+          service_uuid: "FFF0"
+          characteristic_uuid: "FFF3"
+          # List of bytes to write.
+          value: [0x7e, 00, 04, 01, 00, 00, 00, 00, 0xef]
+    on_turn_off:
+      - lambda: |-
+          id(led_bar_light).publish_state(false);
+      - ble_client.ble_write:
+          id: led_bar
+          service_uuid: "FFF0"
+          characteristic_uuid: "FFF3"
+          # List of bytes to write.
+          value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
+    on_state: 
       then:
-        - switch.turn_on: led_bar_switch
         - ble_client.ble_write:
             id: led_bar
             service_uuid: "FFF0"
@@ -133,15 +128,6 @@ button:
             #value: [0x7e, 00, 05, 03, R, G, B, 00, 0xef]
             value: !lambda |-
               return {0x7e, 00, 05, 03, id(red_num).state, id(green_num).state, id(blue_num).state, 00, 0xef};
-light:
-  - platform: rgb
-    name: "RGB LED BAR"
-    red: output_red
-    green: output_green
-    blue: output_blue
-    on_state: 
-      then:
-        - button.press: set_color
 
 output:
   - platform: template
