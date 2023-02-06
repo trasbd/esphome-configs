@@ -156,3 +156,17 @@ button:
           # List of bytes to write.
           #                         R       G     B
           value: [0x7e, 00, 05, 03, 0x00, 255, 0, 00, 0xef]
+
+  - platform: template
+    name: "TMRHRHESP007 Yellow"
+    on_press:
+      then:
+      - switch.turn_on: led_bar_switch
+      #- delay: 5s
+      - ble_client.ble_write:
+          id: led_bar
+          service_uuid: "FFF0"
+          characteristic_uuid: "FFF3"
+          # List of bytes to write.
+          #                         R       G     B
+          value: [0x7e, 00, 05, 03, 255, 255, 0, 00, 0xef]
