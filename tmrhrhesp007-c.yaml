@@ -40,9 +40,9 @@ web_server:
 #   - platform: wifi_signal
 #     name: "TMRHRHESP007 WiFi Signal Sensor"
 
-text_sensor:
-  - platform: version
-    name: "TMRHRHESP007 Version"
+# text_sensor:
+#   - platform: version
+#     name: "TMRHRHESP007 Version"
 
 # esp32_camera_web_server:
 #   - port: 8080
@@ -87,9 +87,9 @@ ble_client:
     on_disconnect: 
         - esp32_ble_tracker.start_scan:
 
-button:
-  - platform: restart
-    name: "TMRHRHESP007 Restart"
+# button:
+#   - platform: restart
+#     name: "TMRHRHESP007 Restart"
   # - platform: shutdown
   #   name: "TMRHRHESP007 Shutdown"
 
@@ -101,8 +101,8 @@ light:
     green: output_green
     blue: output_blue
     on_turn_on:
-      - lambda: |-
-            id(led_bar_light).publish_state(true);
+      # - lambda: |-
+      #       id(led_bar_light).publish_state(true);
       - ble_client.ble_write:
           id: led_bar
           service_uuid: "FFF0"
@@ -110,8 +110,8 @@ light:
           # List of bytes to write.
           value: [0x7e, 00, 04, 01, 00, 00, 00, 00, 0xef]
     on_turn_off:
-      - lambda: |-
-          id(led_bar_light).publish_state(false);
+      # - lambda: |-
+      #     id(led_bar_light).publish_state(false);
       - ble_client.ble_write:
           id: led_bar
           service_uuid: "FFF0"
