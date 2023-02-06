@@ -105,6 +105,10 @@ ble_client:
   #   name: "TMRHRHESP007 Shutdown"
 
 light:
+  - platform: status_led
+    name: "TMRHRHESP007 Status LED"
+    pin: GPIO4
+
   - platform: rgb
     name: "TMRHRHESP007 LED Bar"
     id: led_bar_light
