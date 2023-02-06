@@ -34,12 +34,6 @@ web_server:
   port: 80
   include_internal: True
 
-button:
-  - platform: restart
-    name: "TMRHRHESP007 Restart"
-  # - platform: shutdown
-  #   name: "TMRHRHESP007 Shutdown"
-
 # sensor:
 #   - platform: uptime
 #     name: TMRHRHESP007 Uptime
@@ -116,3 +110,49 @@ switch:
           characteristic_uuid: "FFF3"
           # List of bytes to write.
           value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
+
+button:
+  - platform: restart
+    name: "TMRHRHESP007 Restart"
+  # - platform: shutdown
+  #   name: "TMRHRHESP007 Shutdown"
+
+  - platform: template
+    name: "TMRHRHESP007 Red"
+    on_press:
+      then:
+        - switch.turn_on: led_bar_switch
+        - ble_client.ble_write:
+            id: led_bar
+            service_uuid: "FFF0"
+            characteristic_uuid: "FFF3"
+            # List of bytes to write.
+            value: [0x7e, 00, 05, 03, 0xff, 00, 00, 00, 0xef]
+
+  - platform: template
+    name: "TMRHRHESP007 Blue"
+    on_press:
+      then:
+      - switch.turn_on: led_bar_switch
+      #- delay: 5s
+      - ble_client.ble_write:
+          id: led_bar
+          service_uuid: "FFF0"
+          characteristic_uuid: "FFF3"
+          # List of bytes to write.
+          #                         R       G     B
+          value: [0x7e, 00, 05, 03, 0x00, 0x00, 255, 00, 0xef]
+
+  - platform: template
+    name: "TMRHRHESP007 Green"
+    on_press:
+      then:
+      - switch.turn_on: led_bar_switch
+      #- delay: 5s
+      - ble_client.ble_write:
+          id: led_bar
+          service_uuid: "FFF0"
+          characteristic_uuid: "FFF3"
+          # List of bytes to write.
+          #                         R       G     B
+          value: [0x7e, 00, 05, 03, 0x00, 255, 0, 00, 0xef]
