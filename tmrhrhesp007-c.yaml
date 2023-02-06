@@ -81,3 +81,14 @@ output:
   - id: light_output
     platform: gpio
     pin: GPIO4
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: BE:FF:C2:32:EF:5E
+    id: led_bar
+    name: "TMRHRHESP007 LED Bar"
+    on_connect: 
+        - esp32_ble_tracker.stop_scan: 
+    on_disconnect: 
+        - esp32_ble_tracker.start_scan:
