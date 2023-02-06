@@ -44,11 +44,6 @@ text_sensor:
   - platform: version
     name: "TMRHRHESP007 Version"
 
-  - platform: template
-    name: RED OUTPUT TEXT
-    lambda: |-
-      return id(red_num).state + " " + id(green_num).state;
-
 # esp32_camera_web_server:
 #   - port: 8080
 #     mode: stream
