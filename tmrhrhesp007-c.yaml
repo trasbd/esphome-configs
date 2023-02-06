@@ -9,7 +9,7 @@ esp32:
     type: arduino
 
 # Enable logging
-logger:
+#logger:
 
 # Enable Home Assistant API
 api:
@@ -88,7 +88,13 @@ ble_client:
     id: led_bar
     name: "TMRHRHESP007 LED Bar"
     on_connect: 
-        - esp32_ble_tracker.stop_scan: 
+        - esp32_ble_tracker.stop_scan:
+        - ble_client.ble_write:
+            id: led_bar
+            service_uuid: "FFF0"
+            characteristic_uuid: "FFF3"
+            # List of bytes to write.
+            value: [0x7e, 00, 04, 01, 00, 00, 00, 00, 0xef] 
     on_disconnect: 
         - esp32_ble_tracker.start_scan:
 
@@ -106,15 +112,15 @@ light:
     red: output_red
     green: output_green
     blue: output_blue
-    on_turn_on:
+    # on_turn_on:
       # - lambda: |-
       #       id(led_bar_light).publish_state(true);
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          value: [0x7e, 00, 04, 01, 00, 00, 00, 00, 0xef]
+      # - ble_client.ble_write:
+      #     id: led_bar
+      #     service_uuid: "FFF0"
+      #     characteristic_uuid: "FFF3"
+      #     # List of bytes to write.
+      #     value: [0x7e, 00, 04, 01, 00, 00, 00, 00, 0xef]
     #on_turn_off:
       # - lambda: |-
       #     id(led_bar_light).publish_state(false);
