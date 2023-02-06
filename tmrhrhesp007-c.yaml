@@ -169,4 +169,4 @@ button:
           characteristic_uuid: "FFF3"
           # List of bytes to write.
           #                         R       G     B
-          value: [0x7e, 00, 05, 03, 255, 255, 0, 00, 0xef]
+          value: [0x7e, 00, 05, 03, 255, 255, 100, 00, 0xef]
