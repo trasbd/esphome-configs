@@ -1,0 +1,75 @@
+esphome:
+  name: "tmrhrhesp003-c"
+  comment: Cat room
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "BydI86Q1ycxrnfaaezI1Pg6hJZu7JUl+jWeiBi9grRM="
+
+ota:
+  password: "79634c3c333563218cc758110472dc82"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Tmrhrhesp003 Fallback Hotspot"
+    password: "IFtn2iKawQl2"
+
+captive_portal:
+
+web_server:
+  port: 80
+  include_internal: True
+
+button:
+  - platform: restart
+    name: "Restart TMRHRHESP003"
+
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream
+  - port: 8081
+    mode: snapshot
+
+esp32_camera:
+  external_clock:
+    pin: GPIO21
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO26
+    scl: GPIO27
+  data_pins: [GPIO4, GPIO5, GPIO18, GPIO19, GPIO36, GPIO39, GPIO34, GPIO35]
+  vsync_pin: GPIO25
+  href_pin: GPIO23
+  pixel_clock_pin: GPIO22
+
+  # Image settings
+  name: TMRHRHESP003 Camera
+  #resolution: 1024x768
+
+sensor:
+  - platform: uptime
+    name: TMRHRHESP003 Uptime
+  - platform: wifi_signal
+    name: "TMRHRHESP003 WiFi Signal Sensor"
+  - platform: dht
+    model: DHT22
+    pin: 32
+    temperature:
+      name: "TMRHRHESP003 Temperature"
+      id: "tmrhrhesp003_temp"
+    humidity:
+      name: "TMRHRHESP003 Humidity"
+    update_interval: 15s

@@ -1,0 +1,82 @@
+esphome:
+  name: tmrhrhesp005
+  includes:
+    - myBLEOutput.h
+    - esphome/components/ble_client/output/
+    - my_output.h
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "IfYjbQNvfQ/DqFeSA6i1PsMsQqJqGvDGKyGbwa5Ucec="
+
+ota:
+  password: "f0a1e54af029bf268a15e13caafc4afb"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Tmrhrhesp005 Fallback Hotspot"
+    password: "dHNeeIcxS78W"
+
+captive_portal:
+    
+web_server:
+  port: 80
+  include_internal: True
+
+esp32_ble_tracker:
+
+ble_client:
+  - mac_address: BE:FF:C2:32:EF:5E
+    id: led_bar
+    on_connect: 
+        - esp32_ble_tracker.stop_scan: 
+    on_disconnect: 
+        - esp32_ble_tracker.start_scan: 
+
+output:
+- platform: custom
+  type: float
+  lambda: |-
+    auto my_red_output = new myBLEOutputRed();
+    App.register_component(my_red_output);
+    return {my_red_output};
+  outputs:
+    id: output_red
+
+- platform: custom
+  type: float
+  lambda: |-
+    auto my_green_output = new myBLEOutputGreen();
+    App.register_component(my_green_output);
+    return {my_green_output};
+  outputs:
+    id: output_green
+
+- platform: custom
+  type: float
+  lambda: |-
+    auto my_blue_output = new myBLEOutputBlue();
+    App.register_component(my_blue_output);
+    return {my_blue_output};
+  outputs:
+    id: output_blue
+
+light:
+  - platform: rgb
+    name: "TMRHRHESP005 LED"
+    red: output_red
+    green: output_green
+    blue: output_blue
