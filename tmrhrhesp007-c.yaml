@@ -132,7 +132,7 @@ light:
       #     value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
     on_state: 
       then:
-        - component.update: red_num
+      #  - component.update: red_num
         - delay: 500ms
         - ble_client.ble_write:
             id: led_bar
