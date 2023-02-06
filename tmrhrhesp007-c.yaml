@@ -44,6 +44,11 @@ text_sensor:
   - platform: version
     name: "TMRHRHESP007 Version"
 
+  - platform: template
+    name: RED OUTPUT TEXT
+    lambda: |-
+      return id(output_red).state;
+
 # esp32_camera_web_server:
 #   - port: 8080
 #     mode: stream
@@ -111,6 +116,15 @@ switch:
           # List of bytes to write.
           value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
 
+number:
+  - platform: template
+    name: Red Number
+    id: red_num
+    min_value: 0
+    max_value: 255
+    step: 1
+    optimistic: True
+
 button:
   - platform: restart
     name: "TMRHRHESP007 Restart"
@@ -118,7 +132,8 @@ button:
   #   name: "TMRHRHESP007 Shutdown"
 
   - platform: template
-    name: "TMRHRHESP007 Red"
+    name: "TMRHRHESP007 Set Color"
+    id: set_color
     on_press:
       then:
         - switch.turn_on: led_bar_switch
@@ -127,46 +142,32 @@ button:
             service_uuid: "FFF0"
             characteristic_uuid: "FFF3"
             # List of bytes to write.
-            value: [0x7e, 00, 05, 03, 0xff, 00, 00, 00, 0xef]
+            #value: [0x7e, 00, 05, 03, 0xff, 00, 00, 00, 0xef]
+            value: !lambda |-
+              return {0x7e, 00, 05, 03, id(output_red).state, id(output_green).state, id(output_blue).state, 00, 0xef};
+
+output:
+  - platform: template
+    id: output_red
+    type: float
+    write_action:
+      - button.press: set_color
 
   - platform: template
-    name: "TMRHRHESP007 Blue"
-    on_press:
-      then:
-      - switch.turn_on: led_bar_switch
-      #- delay: 5s
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          #                         R       G     B
-          value: [0x7e, 00, 05, 03, 0x00, 0x00, 255, 00, 0xef]
+    id: output_green
+    type: float
+    write_action:
+      - button.press: set_color
 
   - platform: template
-    name: "TMRHRHESP007 Green"
-    on_press:
-      then:
-      - switch.turn_on: led_bar_switch
-      #- delay: 5s
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          #                         R       G     B
-          value: [0x7e, 00, 05, 03, 0x00, 255, 0, 00, 0xef]
+    id: output_blue
+    type: float
+    write_action:
+      - button.press: set_color
 
-  - platform: template
-    name: "TMRHRHESP007 Yellow"
-    on_press:
-      then:
-      - switch.turn_on: led_bar_switch
-      #- delay: 5s
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          #                         R       G     B
-          value: [0x7e, 00, 05, 03, 255, 255, 100, 00, 0xef]
+light:
+  - platform: rgb
+    name: "RGB LED BAR"
+    red: output_red
+    green: output_green
+    blue: output_blue
