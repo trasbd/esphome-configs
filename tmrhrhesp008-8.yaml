@@ -49,6 +49,11 @@ sensor:
 #   - platform: wifi_signal
 #     name: "TMRHRHESP008 WiFi Signal Sensor"
 
+  - platform: homeassistant
+    name: "Glucose"
+    entity_id: sensor.dexcom_thomas_m_robert_gmail_com_glucose_value
+    id: "tmrglucose"
+
   # Config Pin	Board Pin	
   # 0	          D3	
   # 1	          TX	
@@ -76,7 +81,7 @@ display:
     dimensions: 16x2
     id: lcd
     lambda: |-
-      it.printf("%.1f%cF\n%.1f%%", (id(temp).state)*9.0/5.0+32.0, 0xDF, id(humid).state);
+      it.printf("%.1f%cF %.0f\n%.1f%%", (id(temp).state)*9.0/5.0+32.0, 0xDF, id(tmrglucose).state, id(humid).state);
 
 switch:
   - platform: template
