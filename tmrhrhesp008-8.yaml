@@ -39,7 +39,9 @@ button:
 light:
   - platform: status_led
     name: "TMRHRHESP008 Status LED"
-    pin: GPIO2
+    pin:
+      number: 2
+      inverted: True
 
 sensor:
   - platform: uptime
