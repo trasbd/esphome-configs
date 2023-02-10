@@ -66,3 +66,11 @@ sensor:
     humidity:
       name: "TMRHRHESP008 Humidity"
     update_interval: 15s
+
+i2c:
+
+display:
+  - platform: lcd_pcf8574
+    dimensions: 20x2
+    lambda: |-
+      it.print("Hello World!");
