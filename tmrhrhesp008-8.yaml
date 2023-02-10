@@ -74,5 +74,16 @@ display:
   - platform: lcd_pcf8574
     address: 0x27
     dimensions: 16x2
+    id: lcd
     lambda: |-
       it.printf("%.1f%cF\n%.1f%%", (id(temp).state)*9.0/5.0+32.0, 0xDF, id(humid).state);
+
+switch:
+  - platform: template
+    name: "Backlight Switch"
+    id: backlight_switch
+    assumed_state: True
+    turn_on_action:
+      - lambda: "id(lcd).backlight(); id(backlight_switch).publish_state(true);"
+    turn_off_action:
+      - lambda: "id(lcd).no_backlight(); id(backlight_switch).publish_state(false);"
