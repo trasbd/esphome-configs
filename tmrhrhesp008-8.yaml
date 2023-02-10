@@ -81,7 +81,7 @@ display:
     dimensions: 16x2
     id: lcd
     lambda: |-
-      it.printf("%.1f%cF %.0f\n%.1f%%", (id(temp).state)*9.0/5.0+32.0, 0xDF, id(tmrglucose).state, id(humid).state);
+      it.printf("%.1f%cF %.0f mg/dL%.1f%%", (id(temp).state)*9.0/5.0+32.0, 0xDF, id(tmrglucose).state, id(humid).state);
 
 switch:
   - platform: template
