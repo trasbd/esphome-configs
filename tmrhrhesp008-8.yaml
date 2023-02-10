@@ -73,6 +73,6 @@ i2c:
 display:
   - platform: lcd_pcf8574
     address: 0x27
-    dimensions: 20x2
+    dimensions: 16x2
     lambda: |-
-      it.print(id(temp));
+      it.printf("%.1f°F", (id(temp).state)*9.0/5.0+32.0);
