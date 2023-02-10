@@ -75,4 +75,4 @@ display:
     address: 0x27
     dimensions: 16x2
     lambda: |-
-      it.printf("%.1f°F", (id(temp).state)*9.0/5.0+32.0);
+      it.printf("%.1f%cF\n%.1f%%", (id(temp).state)*9.0/5.0+32.0, 0xDF, id(humid).state);
