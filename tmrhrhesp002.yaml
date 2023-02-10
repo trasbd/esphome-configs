@@ -110,38 +110,38 @@ output:
 
 esp32_ble_tracker:
 
-ble_client:
-  - mac_address: BE:FF:C2:32:EF:5E
-    id: led_bar
-    on_connect: 
-        - esp32_ble_tracker.stop_scan: 
-    on_disconnect: 
-        - esp32_ble_tracker.start_scan: 
+# ble_client:
+#   - mac_address: BE:FF:C2:32:EF:5E
+#     id: led_bar
+#     on_connect: 
+#         - esp32_ble_tracker.stop_scan: 
+#     on_disconnect: 
+#         - esp32_ble_tracker.start_scan: 
             
   
-switch:
-  - platform: template
-    name: "LED Bar"
-    id: led_bar_switch
-    assumed_state: true
-    turn_on_action:
-      - lambda: |-
-            id(led_bar_switch).publish_state(true);
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          value: [0x7e, 00, 04, 01, 00, 00, 00, 00, 0xef]
-    turn_off_action:
-      - lambda: |-
-          id(led_bar_switch).publish_state(false);
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
+# switch:
+#   - platform: template
+#     name: "LED Bar"
+#     id: led_bar_switch
+#     assumed_state: true
+#     turn_on_action:
+#       - lambda: |-
+#             id(led_bar_switch).publish_state(true);
+#       - ble_client.ble_write:
+#           id: led_bar
+#           service_uuid: "FFF0"
+#           characteristic_uuid: "FFF3"
+#           # List of bytes to write.
+#           value: [0x7e, 00, 04, 01, 00, 00, 00, 00, 0xef]
+#     turn_off_action:
+#       - lambda: |-
+#           id(led_bar_switch).publish_state(false);
+#       - ble_client.ble_write:
+#           id: led_bar
+#           service_uuid: "FFF0"
+#           characteristic_uuid: "FFF3"
+#           # List of bytes to write.
+#           value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
 
 button:
   - platform: restart
@@ -150,45 +150,45 @@ button:
     name: "TMRHRHESP002 Shutdown"
 
     
-  - platform: template
-    name: "Red Button"
-    on_press:
-      then:
-        - switch.turn_on: led_bar_switch
-        - ble_client.ble_write:
-            id: led_bar
-            service_uuid: "FFF0"
-            characteristic_uuid: "FFF3"
-            # List of bytes to write.
-            value: [0x7e, 00, 05, 03, 0xff, 00, 00, 00, 0xef]
+  # - platform: template
+  #   name: "Red Button"
+  #   on_press:
+  #     then:
+  #       - switch.turn_on: led_bar_switch
+  #       - ble_client.ble_write:
+  #           id: led_bar
+  #           service_uuid: "FFF0"
+  #           characteristic_uuid: "FFF3"
+  #           # List of bytes to write.
+  #           value: [0x7e, 00, 05, 03, 0xff, 00, 00, 00, 0xef]
 
-  - platform: template
-    name: "Blue Button"
-    on_press:
-      then:
-      - switch.turn_on: led_bar_switch
-      #- delay: 5s
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          #                         R       G     B
-          value: [0x7e, 00, 05, 03, 0x00, 0x00, 255, 00, 0xef]
+  # - platform: template
+  #   name: "Blue Button"
+  #   on_press:
+  #     then:
+  #     - switch.turn_on: led_bar_switch
+  #     #- delay: 5s
+  #     - ble_client.ble_write:
+  #         id: led_bar
+  #         service_uuid: "FFF0"
+  #         characteristic_uuid: "FFF3"
+  #         # List of bytes to write.
+  #         #                         R       G     B
+  #         value: [0x7e, 00, 05, 03, 0x00, 0x00, 255, 00, 0xef]
 
-  - platform: template
-    name: "Green Button"
-    on_press:
-      then:
-      - switch.turn_on: led_bar_switch
-      #- delay: 5s
-      - ble_client.ble_write:
-          id: led_bar
-          service_uuid: "FFF0"
-          characteristic_uuid: "FFF3"
-          # List of bytes to write.
-          #                         R       G     B
-          value: [0x7e, 00, 05, 03, 0x00, 255, 0, 00, 0xef]
+  # - platform: template
+  #   name: "Green Button"
+  #   on_press:
+  #     then:
+  #     - switch.turn_on: led_bar_switch
+  #     #- delay: 5s
+  #     - ble_client.ble_write:
+  #         id: led_bar
+  #         service_uuid: "FFF0"
+  #         characteristic_uuid: "FFF3"
+  #         # List of bytes to write.
+  #         #                         R       G     B
+  #         value: [0x7e, 00, 05, 03, 0x00, 255, 0, 00, 0xef]
 
 sensor:
   - platform: uptime
