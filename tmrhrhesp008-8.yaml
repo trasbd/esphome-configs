@@ -43,11 +43,29 @@ sensor:
     name: "TMRHRHESP008 WiFi Signal Sensor"
 
   - platform: dht
-    model: AUTO_DETECT
-    pin: 5
+    model: DHT22
+    pin: 0 #D3
     temperature:
       name: "TMRHRHESP008 Temperature"
       id: "TMRHRHESP008_temp"
     humidity:
       name: "TMRHRHESP008 Humidity"
     update_interval: 15s
+
+light:
+  - platform: binary
+    name: "TEST"
+    output: light_output
+
+output:
+  - id: light_output
+    platform: gpio
+    pin: !lambda return temp_num.state;
+  
+number:
+  - platform: template
+    id: temp_num
+    optimistic: true
+    min_value: 0
+    max_value: 8
+    step: 1
