@@ -2,7 +2,7 @@ esphome:
   name: tmrhrhesp008-8
 
 esp8266:
-  board: esp01_1m
+  board: nodemcuv2
 
 # Enable logging
 logger:
@@ -36,18 +36,18 @@ button:
   - platform: shutdown
     name: "TMRHRHESP008 Shutdown"
 
-light:
-  - platform: status_led
-    name: "TMRHRHESP008 Status LED"
-    pin:
-      number: 2
-      inverted: True
+# light:
+#   - platform: status_led
+#     name: "TMRHRHESP008 Status LED"
+#     pin:
+#       number: 2
+#       inverted: True
 
 sensor:
-  - platform: uptime
-    name: TMRHRHESP008 Uptime
-  - platform: wifi_signal
-    name: "TMRHRHESP008 WiFi Signal Sensor"
+#   - platform: uptime
+#     name: TMRHRHESP008 Uptime
+#   - platform: wifi_signal
+#     name: "TMRHRHESP008 WiFi Signal Sensor"
 
   # Config Pin	Board Pin	
   # 0	          D3	
@@ -62,15 +62,17 @@ sensor:
     pin: 1 #TX
     temperature:
       name: "TMRHRHESP008 Temperature"
-      id: "TMRHRHESP008_temp"
+      id: "temp"
     humidity:
       name: "TMRHRHESP008 Humidity"
+      id: "humid"
     update_interval: 15s
 
 i2c:
 
 display:
   - platform: lcd_pcf8574
+    address: 0x27
     dimensions: 20x2
     lambda: |-
-      it.print("Hello World!");
+      it.print(id(temp));
