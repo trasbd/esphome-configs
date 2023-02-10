@@ -2,7 +2,7 @@ esphome:
   name: tmrhrhesp008-8
 
 esp8266:
-  board: esp01_1m
+  board: nodemcuv2
 
 # Enable logging
 logger:
@@ -10,10 +10,10 @@ logger:
 # Enable Home Assistant API
 api:
   encryption:
-    key: "B6MUAxJoOzpDEgrWxDWv4Hb5c2jsZHwdku4GhmHK0ws="
+    key: "m9vGPXDYrizWz7Ci4jFJzwaxzAAJ29VMOTZZWa5CnpM="
 
 ota:
-  password: "9f34199d45ab751935fd07ecdbc0dad1"
+  password: "59287d54ef9d3246645016acd81e4783"
 
 wifi:
   ssid: !secret wifi_ssid
@@ -22,7 +22,32 @@ wifi:
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Tmrhrhesp008-8 Fallback Hotspot"
-    password: "HEMWnoUpiEDW"
+    password: "4yU5rwcQrCNY"
 
 captive_portal:
     
+web_server:
+  port: 80
+  include_internal: True
+
+button:
+  - platform: restart
+    name: "TMRHRHESP008 Restart"
+  - platform: shutdown
+    name: "TMRHRHESP008 Shutdown"
+
+sensor:
+  - platform: uptime
+    name: TMRHRHESP008 Uptime
+  - platform: wifi_signal
+    name: "TMRHRHESP008 WiFi Signal Sensor"
+
+  - platform: dht
+    model: AUTO_DETECT
+    pin: 5
+    temperature:
+      name: "TMRHRHESP008 Temperature"
+      id: "TMRHRHESP008_temp"
+    humidity:
+      name: "TMRHRHESP008 Humidity"
+    update_interval: 15s
