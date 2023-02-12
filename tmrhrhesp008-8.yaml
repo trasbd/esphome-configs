@@ -36,18 +36,18 @@ button:
   - platform: shutdown
     name: "TMRHRHESP008 Shutdown"
 
-# light:
-#   - platform: status_led
-#     name: "TMRHRHESP008 Status LED"
-#     pin:
-#       number: 2
-#       inverted: True
+light:
+  - platform: status_led
+    name: "TMRHRHESP008 Status LED"
+    pin:
+      number: 2
+      inverted: True
 
 sensor:
-#   - platform: uptime
-#     name: TMRHRHESP008 Uptime
-#   - platform: wifi_signal
-#     name: "TMRHRHESP008 WiFi Signal Sensor"
+  - platform: uptime
+    name: TMRHRHESP008 Uptime
+  - platform: wifi_signal
+    name: "TMRHRHESP008 WiFi Signal Sensor"
 
   - platform: homeassistant
     name: "Glucose"
@@ -85,7 +85,7 @@ display:
 
 switch:
   - platform: template
-    name: "Backlight Switch"
+    name: "TMRHRHESP008 Backlight"
     id: backlight_switch
     assumed_state: True
     turn_on_action:
