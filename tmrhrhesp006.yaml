@@ -67,15 +67,6 @@ light:
   - platform: binary
     name: "TMRHRHESP006 RED LED"
     output: light_output
-    effects:
-      - pulse:
-      - pulse:
-          name: "Fast Pulse"
-          transition_length: 0.5s
-          update_interval: 0.5s
-      - pulse:
-          name: "Slow Pulse"
-          update_interval: 2s
 
 output:
   - id: light_output
