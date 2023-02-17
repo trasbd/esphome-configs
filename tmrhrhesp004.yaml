@@ -82,11 +82,6 @@ sensor:
     name: "TMRHRHESP004 WiFi Signal Sensor"
 
 light:
-  - platform: binary
-    name: "TMRHRHESP004 Flash"
-    output: light_output
-
-output:
-  - id: light_output
-    platform: gpio
-    pin: GPIO4
+  - platform: status_led
+    name: "TMRHRHESP004 Status LED"
+    pin: 4
