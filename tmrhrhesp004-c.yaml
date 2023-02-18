@@ -1,20 +1,13 @@
 esphome:
   name: tmrhrhesp004
-  # libraries:
-  #   - https://github.com/esphome/esphome.git#2022.10.1
-  #   - espAPP = https://github.com/esphome/esphome.git#2022.10.1
-  # includes:
-  #   - esphome-2022.10.1/esphome
-  #platformio_options:
-     #"version": "2022.10.1"
 
+
+  #   - https://github.com/esphome/esphome.git#2022.11.5
 
 esp32:
   board: esp32cam
   framework:
     type: arduino
-    # platform_version: 3.5.0
-    # version: 1.0.6
 
 # Enable logging
 logger:
