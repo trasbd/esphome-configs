@@ -71,9 +71,9 @@ esp32_camera:
   name: TMRHRHESP004 Camera
   resolution: 640X480
 
-# sensor:
-#   - platform: uptime
-#     name: TMRHRHESP004 Uptime
+sensor:
+   - platform: uptime
+     name: TMRHRHESP004 Uptime
 #   - platform: wifi_signal
 #     name: "TMRHRHESP004 WiFi Signal Sensor"
 
@@ -83,4 +83,3 @@ light:
     pin: 4
 
 #esp32_ble_tracker:
-  
