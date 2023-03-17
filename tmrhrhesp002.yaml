@@ -210,12 +210,12 @@ sensor:
 text_sensor:
   - platform: wifi_info
     ip_address:
-      name: TMRHRHESP001 IP Address
+      name: TMRHRHESP002 IP Address
     ssid:
-      name: TMRHRHESP001 Connected SSID
+      name: TMRHRHESP002 Connected SSID
    # bssid:
-   #   name: TMRHRHESP001 Connected BSSID
+   #   name: TMRHRHESP002 Connected BSSID
     mac_address:
-      name: TMRHRHESP001 Mac Wifi Address
+      name: TMRHRHESP002 Mac Wifi Address
    # scan_results:
-    #  name: TMRHRHESP001 Latest Scan Results
+    #  name: TMRHRHESP002 Latest Scan Results

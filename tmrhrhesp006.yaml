@@ -79,12 +79,12 @@ output:
 text_sensor:
   - platform: wifi_info
     ip_address:
-      name: TMRHRHESP001 IP Address
+      name: TMRHRHESP006 IP Address
     ssid:
-      name: TMRHRHESP001 Connected SSID
+      name: TMRHRHESP006 Connected SSID
    # bssid:
-   #   name: TMRHRHESP001 Connected BSSID
+   #   name: TMRHRHESP006 Connected BSSID
     mac_address:
-      name: TMRHRHESP001 Mac Wifi Address
+      name: TMRHRHESP006 Mac Wifi Address
    # scan_results:
-    #  name: TMRHRHESP001 Latest Scan Results
+    #  name: TMRHRHESP006 Latest Scan Results
