@@ -55,6 +55,9 @@ sensor:
       name: "TMRHRHESP006 Humidity"
     update_interval: 15s
 
+  - platform: internal_temperature
+    name: "tmrhrhesp006 Internal Temperature"
+
 binary_sensor:
   - platform: gpio
     pin: 34
@@ -72,3 +75,16 @@ output:
   - id: light_output
     platform: gpio
     pin: 32
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: TMRHRHESP001 IP Address
+    ssid:
+      name: TMRHRHESP001 Connected SSID
+   # bssid:
+   #   name: TMRHRHESP001 Connected BSSID
+    mac_address:
+      name: TMRHRHESP001 Mac Wifi Address
+   # scan_results:
+    #  name: TMRHRHESP001 Latest Scan Results

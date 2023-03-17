@@ -93,3 +93,16 @@ switch:
       - lambda: "id(lcd).backlight(); id(backlight_switch).publish_state(true);"
     turn_off_action:
       - lambda: "id(lcd).no_backlight(); id(backlight_switch).publish_state(false);"
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: TMRHRHESP001 IP Address
+    ssid:
+      name: TMRHRHESP001 Connected SSID
+    # bssid:
+    #   name: TMRHRHESP001 Connected BSSID
+    mac_address:
+      name: TMRHRHESP001 Mac Wifi Address
+    # scan_results:
+    #  name: TMRHRHESP001 Latest Scan Results

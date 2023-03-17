@@ -59,6 +59,9 @@ sensor:
       #name: "tmrhrhesp001 Humidity"
     update_interval: 15s
 
+  - platform: internal_temperature
+    name: "tmrhrhesp001 Internal Temperature"
+
   - platform: homeassistant
     name: "Glucose"
     entity_id: sensor.dexcom_thomas_m_robert_gmail_com_glucose_value
