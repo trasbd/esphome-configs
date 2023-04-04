@@ -23,8 +23,7 @@ ota:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
-
-
+  
   manual_ip:
     static_ip: 192.168.86.207
     gateway: 192.168.86.1
