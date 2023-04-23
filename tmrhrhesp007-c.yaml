@@ -1,5 +1,5 @@
 esphome:
-  name: tmrhrhesp007-c
+  name: tmrhrhesp007
   comment: "BLE LED Bar"
 
 # https://github.com/esphome/esphome.git#2022.10.1

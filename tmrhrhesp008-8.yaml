@@ -1,5 +1,5 @@
 esphome:
-  name: tmrhrhesp008-8
+  name: tmrhrhesp008
   comment: Bedroom
 
 esp8266:
