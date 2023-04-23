@@ -3,8 +3,14 @@ esphome:
 
   #   - https://github.com/esphome/esphome.git#2022.11.5
 
+external_components:
+  - source:
+      type: local
+      path: my_components
+    components: [ esp32_camera ]
+
 esp32:
-  board: esp32cam
+  board: esp32dev
   framework:
     type: arduino
 
