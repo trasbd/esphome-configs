@@ -112,6 +112,7 @@ display:
     scroll_mode: CONTINUOUS
     scroll_delay:   1s
     rotate_chip: 0
+    reverse_enable: true
     update_interval: 1s
     lambda: |-
       it.printf(0, 0, id(digit_font), "%.0f", id(tmrglucose).state);
