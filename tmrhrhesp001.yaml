@@ -2,6 +2,11 @@ esphome:
   name: tmrhrhesp001
   comment: "Living Room: Graph & DHT"
 
+  #fixes mirror image problem
+external_components:
+  - source: github://esphome/esphome@dev
+    components: [ max7219digit ]
+
 esp32:
   board: esp32dev
   framework:
@@ -109,12 +114,11 @@ display:
     cs_pin: 14
     num_chips: 4
     intensity: 1
-    scroll_mode: CONTINUOUS
-    scroll_delay:   1s
+    scroll_enable: false
     rotate_chip: 0
-    reverse_enable: true
     update_interval: 1s
     lambda: |-
+
       it.printf(0, 0, id(digit_font), "%.0f", id(tmrglucose).state);
       it.print(it.get_width(), 0, id(digit_fontt), TextAlign::TOP_RIGHT, "mg/dl");
 
