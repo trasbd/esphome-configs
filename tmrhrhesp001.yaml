@@ -3,9 +3,9 @@ esphome:
   comment: "Living Room"
 
   #fixes mirror image problem
-external_components:
-  - source: github://esphome/esphome@dev
-    components: [ max7219digit ]
+#external_components:
+#  - source: github://esphome/esphome@dev
+#    components: [ max7219digit ]
 
 esp32:
   board: esp32dev
