@@ -11,12 +11,12 @@ external_components:
     components: [ esp32_camera ]
 
 esp32:
-  board: esp32dev
+  board: esp32cam
   framework:
     type: arduino
 
 # Enable logging
-logger:
+# logger:
 #   level: INFO
 
 # Enable Home Assistant API
@@ -42,22 +42,22 @@ wifi:
 
 # captive_portal:
     
-web_server:
-  port: 80
-  include_internal: True
+# web_server:
+#   port: 80
+#   include_internal: True
 
-button:
-  - platform: restart
-    name: "tmrhrhesp004 Restart"
-  # - platform: shutdown
-  #   name: "tmrhrhesp004 Shutdown"
+# button:
+#   - platform: restart
+#     name: "tmrhrhesp004 Restart"
+#   - platform: shutdown
+#     name: "tmrhrhesp004 Shutdown"
 
-text_sensor:
-  - platform: version
-    name: "tmrhrhesp004 Version"
-  - platform: wifi_info
-    ip_address: 
-      name: TMRHRHESP004 IP
+# text_sensor:
+#   - platform: version
+#     name: "tmrhrhesp004 Version"
+#   - platform: wifi_info
+#     ip_address: 
+#       name: TMRHRHESP004 IP
 
 # esp32_camera_web_server:
 #   - port: 8080
@@ -82,9 +82,9 @@ esp32_camera:
   name: TMRHRHESP004 Camera
   resolution: 640X480
 
-sensor:
-   - platform: uptime
-     name: TMRHRHESP004 Uptime
+# sensor:
+#    - platform: uptime
+#      name: TMRHRHESP004 Uptime
 #   - platform: wifi_signal
 #     name: "TMRHRHESP004 WiFi Signal Sensor"
 
