@@ -80,7 +80,7 @@ esp32_camera:
   power_down_pin: GPIO32
   # Image settings
   name: TMRHRHESP004 Camera
-  resolution: 640X480
+  resolution: 160x120
 
 # sensor:
 #    - platform: uptime
