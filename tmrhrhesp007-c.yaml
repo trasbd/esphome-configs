@@ -155,7 +155,7 @@ light:
             # List of bytes to write.
             #value: [0x7e, 00, 05, 03, R, G, B, 00, 0xef]
             value: !lambda |-
-              return {0x7e, 00, 05, 03, id(red_num).state, id(green_num).state, id(blue_num).state, 00, 0xef};
+              return {0x7e, 00, 05, 03, (unsigned char)id(red_num).state, (unsigned char)id(green_num).state, (unsigned char)id(blue_num).state, 00, 0xef};
 
 output:
   - platform: template
