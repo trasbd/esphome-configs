@@ -42,12 +42,12 @@ button:
   - platform: shutdown
     name: "TMRHRHESP008 Shutdown"
 
-light:
-  - platform: status_led
-    name: "TMRHRHESP008 Status LED"
-    pin:
-      number: 2
-      inverted: True
+# light:
+#   - platform: status_led
+#     name: "TMRHRHESP008 Status LED"
+#     pin:
+#       number: 2
+#       inverted: True
 
 sensor:
   - platform: uptime
