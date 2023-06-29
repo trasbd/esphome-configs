@@ -57,12 +57,12 @@ text_sensor:
 sensor:
   - platform: dht
     model: AUTO_DETECT
-    pin: 25
+    pin: 12
     temperature:
       name: "tmrhrhesp001 Temperature"
       id: "lrtemp"
-    #humidity:
-      #name: "tmrhrhesp001 Humidity"
+    humidity:
+      name: "tmrhrhesp001 Humidity"
     update_interval: 15s
 
   - platform: internal_temperature
