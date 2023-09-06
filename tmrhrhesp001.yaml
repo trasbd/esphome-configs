@@ -63,6 +63,8 @@ sensor:
       id: "lrtemp"
     humidity:
       name: "tmrhrhesp001 Humidity"
+      filters:
+       - offset: -20.0
     update_interval: 15s
 
   - platform: internal_temperature
