@@ -56,7 +56,7 @@ text_sensor:
 
 sensor:
   - platform: dht
-    model: AUTO_DETECT
+    model: DHT22
     pin: 12
     temperature:
       name: "tmrhrhesp001 Temperature"
@@ -64,7 +64,7 @@ sensor:
     humidity:
       name: "tmrhrhesp001 Humidity"
       filters:
-       - offset: -20.0
+#       - offset: -20.0
     update_interval: 15s
 
   - platform: internal_temperature
