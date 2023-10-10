@@ -57,7 +57,7 @@ text_sensor:
 sensor:
   - platform: dht
     model: DHT22
-    pin: 12
+    pin: 25
     temperature:
       name: "tmrhrhesp001 Temperature"
       id: "lrtemp"
