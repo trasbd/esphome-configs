@@ -1,11 +1,17 @@
+substitutions:
+  devicename: tmrhrhesp002
+  deviceIP: 192.168.86.202
+
 esphome:
-  name: tmrhrhesp002
+  name: $devicename
   comment: Bathroom
 
 esp32:
   board: esp32dev
   framework:
     type: arduino
+
+
 
 # Enable logging
 logger:
@@ -18,28 +24,9 @@ api:
 ota:
   password: "6a8583c110bd17bb846f6707716d9e7a"
 
-network:
-    enable_ipv6: true
 
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
+<<: !include common.yaml
 
-  manual_ip:
-    static_ip: 192.168.86.202
-    gateway: 192.168.86.1
-    subnet: 255.255.255.0
-
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
-  ap:
-    ssid: "TMRHRHESP002 Fallback Hotspot"
-    password: "HQ6ZShyY1OdO"
-
-captive_portal:
-
-web_server:
-  port: 80
-  include_internal: True
 
 light:
   - platform: rgb
@@ -146,12 +133,6 @@ esp32_ble_tracker:
 #           # List of bytes to write.
 #           value: [0x7e, 00, 04, 00, 00, 00, 00, 00, 0xef]
 
-button:
-  - platform: restart
-    name: "TMRHRHESP002 Restart"
-  - platform: shutdown
-    name: "TMRHRHESP002 Shutdown"
-
     
   # - platform: template
   #   name: "Red Button"
@@ -194,10 +175,6 @@ button:
   #         value: [0x7e, 00, 05, 03, 0x00, 255, 0, 00, 0xef]
 
 sensor:
-  - platform: uptime
-    name: TMRHRHESP002 Uptime
-  - platform: wifi_signal
-    name: "TMRHRHESP002 WiFi Signal Sensor"
   - platform: dht
     model: DHT22
     pin: 13
@@ -207,18 +184,5 @@ sensor:
     humidity:
       name: "TMRHRHESP002 Humidity"
     update_interval: 15s
-  - platform: internal_temperature
-    name: "tmrhrhesp002 Internal Temperature"
 
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      name: TMRHRHESP002 IP Address
-    ssid:
-      name: TMRHRHESP002 Connected SSID
-   # bssid:
-   #   name: TMRHRHESP002 Connected BSSID
-    mac_address:
-      name: TMRHRHESP002 Mac Wifi Address
-   # scan_results:
-    #  name: TMRHRHESP002 Latest Scan Results
+  - <<: !include commonSensor.yaml
