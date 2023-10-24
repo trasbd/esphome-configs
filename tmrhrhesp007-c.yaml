@@ -20,6 +20,9 @@ api:
 ota:
   password: "eff289fc1940e92b40d2c6cc41ba717a"
 
+network:
+    enable_ipv6: true
+
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
