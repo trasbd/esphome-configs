@@ -1,6 +1,7 @@
 substitutions:
-  devicename: tmrhrhesp002
-  deviceIP: 192.168.86.202
+  deviceNumber: "2"
+  devicename: tmrhrhesp00$deviceNumber
+  deviceIP: 192.168.86.20$deviceNumber
 
 esphome:
   name: $devicename
@@ -25,12 +26,12 @@ ota:
   password: "6a8583c110bd17bb846f6707716d9e7a"
 
 
-<<: !include common.yaml
+<<: !include .common.yaml
 
 
 light:
   - platform: rgb
-    name: "TMRHRHESP002 LED"
+    name: "$devicename LED"
     red: output_componentR
     green: output_componentG
     blue: output_componentB
@@ -179,10 +180,9 @@ sensor:
     model: DHT22
     pin: 13
     temperature:
-      name: "TMRHRHESP002 Temperature"
-      id: "tmrhrhesp002_temp"
+      name: "$devicename Temperature"
     humidity:
-      name: "TMRHRHESP002 Humidity"
+      name: "$devicename Humidity"
     update_interval: 15s
 
-  - <<: !include commonSensor.yaml
+  - <<: !include .commonSensor.yaml

@@ -1,5 +1,10 @@
+substitutions:
+  deviceNumber: "3"
+  devicename: tmrhrhesp00$deviceNumber
+  deviceIP: 192.168.86.20$deviceNumber
+
 esphome:
-  name: "tmrhrhesp003"
+  name: "$devicename"
   comment: Cat Room
 
 esp32:
@@ -18,32 +23,7 @@ api:
 ota:
   password: "79634c3c333563218cc758110472dc82"
 
-network:
-    enable_ipv6: true
-
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-
-  manual_ip:
-    static_ip: 192.168.86.203
-    gateway: 192.168.86.1
-    subnet: 255.255.255.0
-
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
-  ap:
-    ssid: "Tmrhrhesp003 Fallback Hotspot"
-    password: "IFtn2iKawQl2"
-
-captive_portal:
-
-web_server:
-  port: 80
-  include_internal: True
-
-button:
-  - platform: restart
-    name: "Restart TMRHRHESP003"
+<<: !include .common.yaml
 
 esp32_camera_web_server:
   - port: 8080
@@ -64,20 +44,16 @@ esp32_camera:
   pixel_clock_pin: GPIO22
 
   # Image settings
-  name: TMRHRHESP003 Camera
+  name: $devicename Camera
   #resolution: 1024x768
 
 sensor:
-  - platform: uptime
-    name: TMRHRHESP003 Uptime
-  - platform: wifi_signal
-    name: "TMRHRHESP003 WiFi Signal Sensor"
+  - <<: !include .commonSensor.yaml
   - platform: dht
     model: DHT22
     pin: 32
     temperature:
-      name: "TMRHRHESP003 Temperature"
-      id: "tmrhrhesp003_temp"
+      name: "$devicename Temperature"
     humidity:
-      name: "TMRHRHESP003 Humidity"
+      name: "$devicename Humidity"
     update_interval: 15s

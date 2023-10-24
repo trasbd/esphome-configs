@@ -1,6 +1,7 @@
 substitutions:
-  devicename: tmrhrhesp001
-  deviceIP: 192.168.86.201
+  deviceNumber: "01"
+  devicename: tmrhrhesp0$deviceNumber
+  deviceIP: 192.168.86.2$deviceNumber
 
 esphome:
   name: $devicename
@@ -28,10 +29,10 @@ api:
 ota:
   password: "22ce48a66a5653f5aa4d63e4ea5d6558"
 
-<<: !include common.yaml
+<<: !include .common.yaml
 
 sensor:
-  - <<: !include commonSensor.yaml
+  - <<: !include .commonSensor.yaml
 
   - platform: dht
     model: DHT22

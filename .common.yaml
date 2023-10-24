@@ -1,4 +1,7 @@
-
+# substitutions:
+# https://esphome.io/guides/configuration-types.html#substitutions
+#   devicename: tmrhrhesp00$deviceNumber
+#   deviceIP: 192.168.86.20$deviceNumber
 
 network:
     enable_ipv6: true

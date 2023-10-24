@@ -1,5 +1,10 @@
+substitutions:
+  deviceNumber: "06"
+  devicename: tmrhrhesp0$deviceNumber
+  deviceIP: 192.168.86.2$deviceNumber
+
 esphome:
-  name: tmrhrhesp006
+  name: $devicename
   comment: Basement
 
 esp32:
@@ -18,82 +23,34 @@ api:
 ota:
   password: "637ad8549bf28a8cec2d6af580ef7164"
 
-network:
-  enable_ipv6: true
-
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-
-  manual_ip:
-    static_ip: 192.168.86.206
-    gateway: 192.168.86.1
-    subnet: 255.255.255.0
-    dns1: 192.168.86.46
-
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
-  ap:
-    ssid: "Tmrhrhesp006 Fallback Hotspot"
-    password: "ZplrNTuk57x9"
-
-captive_portal:
-    
-web_server:
-  port: 80
-  include_internal: True
-
-button:
-  - platform: restart
-    name: "TMRHRHESP006 Restart"
-  - platform: shutdown
-    name: "TMRHRHESP006 Shutdown"
+<<: !include .common.yaml
 
 sensor:
-  - platform: uptime
-    name: TMRHRHESP006 Uptime
-  - platform: wifi_signal
-    name: "TMRHRHESP006 WiFi Signal Sensor"
+  - <<: !include .commonSensor.yaml
 
   - platform: dht
     model: DHT22
     pin: 18
     temperature:
-      name: "TMRHRHESP006 Temperature"
-      id: "tmrhrhesp006_temp"
+      name: "$devicename Temperature"
     humidity:
-      name: "TMRHRHESP006 Humidity"
+      name: "$devicename Humidity"
     update_interval: 15s
-
-  - platform: internal_temperature
-    name: "tmrhrhesp006 Internal Temperature"
 
 binary_sensor:
   - platform: gpio
     pin: 34
-    name: "TMRHRHESP006 Blue Push Button"
+    name: "$devicename Blue Push Button"
   - platform: gpio
     pin: 35
-    name: "TMRHRHESP006 Red Push Button"
+    name: "$devicename Red Push Button"
 
 light:
   - platform: binary
-    name: "TMRHRHESP006 RED LED"
+    name: "$devicename RED LED"
     output: light_output
 
 output:
   - id: light_output
     platform: gpio
     pin: 32
-
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      name: TMRHRHESP006 IP Address
-    ssid:
-      name: TMRHRHESP006 Connected SSID
-   # bssid:
-   #   name: TMRHRHESP006 Connected BSSID
-    mac_address:
-      name: TMRHRHESP006 Mac Wifi Address
-   # scan_results:
-    #  name: TMRHRHESP006 Latest Scan Results

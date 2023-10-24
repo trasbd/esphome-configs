@@ -1,5 +1,3 @@
-  - platform: internal_temperature
-    name: "$devicename Internal Temperature"
   - platform: uptime
     name: $devicename Uptime
   - platform: wifi_signal

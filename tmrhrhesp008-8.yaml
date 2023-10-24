@@ -1,5 +1,10 @@
+substitutions:
+  deviceNumber: "08"
+  devicename: tmrhrhesp0$deviceNumber
+  deviceIP: 192.168.86.2$deviceNumber
+
 esphome:
-  name: tmrhrhesp008
+  name: $devicename
   comment: Bedroom
 
 esp8266:
@@ -16,34 +21,7 @@ api:
 ota:
   password: "59287d54ef9d3246645016acd81e4783"
 
-network:
-    enable_ipv6: true
-
-wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-
-  manual_ip:
-    static_ip: 192.168.86.208
-    gateway: 192.168.86.1
-    subnet: 255.255.255.0
-
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
-  ap:
-    ssid: "Tmrhrhesp008-8 Fallback Hotspot"
-    password: "4yU5rwcQrCNY"
-
-captive_portal:
-    
-web_server:
-  port: 80
-  include_internal: True
-
-button:
-  - platform: restart
-    name: "TMRHRHESP008 Restart"
-  - platform: shutdown
-    name: "TMRHRHESP008 Shutdown"
+<<: !include .common.yaml
 
 # light:
 #   - platform: status_led
@@ -51,34 +29,30 @@ button:
 #     pin:
 #       number: 2
 #       inverted: True
+# Config Pin	Board Pin	
+# 0	          D3	
+# 1	          TX	
+# 2	          D4	Built-In LED (Inverse)
+# 3	          RX	
+# 4	          D2	
+# 5	          D1	
 
 sensor:
-  - platform: uptime
-    name: TMRHRHESP008 Uptime
-  - platform: wifi_signal
-    name: "TMRHRHESP008 WiFi Signal Sensor"
+  - <<: !include .commonSensor8266.yaml
 
   - platform: homeassistant
     name: "Glucose"
     entity_id: sensor.dexcom_thomas_m_robert_gmail_com_glucose_value
     id: "tmrglucose"
 
-  # Config Pin	Board Pin	
-  # 0	          D3	
-  # 1	          TX	
-  # 2	          D4	Built-In LED (Inverse)
-  # 3	          RX	
-  # 4	          D2	
-  # 5	          D1	
-
   - platform: dht
     model: DHT22
     pin: 1 #TX
     temperature:
-      name: "TMRHRHESP008 Temperature"
+      name: "$devicename Temperature"
       id: "temp"
     humidity:
-      name: "TMRHRHESP008 Humidity"
+      name: "$devicename Humidity"
       id: "humid"
     update_interval: 15s
 
@@ -94,23 +68,10 @@ display:
 
 switch:
   - platform: template
-    name: "TMRHRHESP008 Backlight"
+    name: "$devicename Backlight"
     id: backlight_switch
     assumed_state: True
     turn_on_action:
       - lambda: "id(lcd).backlight(); id(backlight_switch).publish_state(true);"
     turn_off_action:
       - lambda: "id(lcd).no_backlight(); id(backlight_switch).publish_state(false);"
-
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      name: TMRHRHESP008 IP Address
-    ssid:
-      name: TMRHRHESP008 Connected SSID
-    # bssid:
-    #   name: TMRHRHESP008 Connected BSSID
-    mac_address:
-      name: TMRHRHESP008 Mac Wifi Address
-    # scan_results:
-    #  name: TMRHRHESP008 Latest Scan Results
