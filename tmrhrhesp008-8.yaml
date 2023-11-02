@@ -38,7 +38,7 @@ ota:
 # 5	          D1	
 
 sensor:
-  - <<: !include .commonSensor8266.yaml
+  - <<: !include .commonSensor.yaml
 
   - platform: homeassistant
     name: "Glucose"
