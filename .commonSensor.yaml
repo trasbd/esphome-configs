@@ -1,3 +1,4 @@
-  - platform: internal_temperature
-    name: "$devicename Internal Temperature"
-  - <<: !include .commonSensor8266.yaml
+  - platform: uptime
+    name: $devicename Uptime
+  - platform: wifi_signal
+    name: "$devicename WiFi Signal Sensor"

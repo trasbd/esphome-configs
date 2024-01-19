@@ -7,6 +7,11 @@ esphome:
   name: $devicename
   comment: Bedroom
 
+# external_components:
+#   source: github://pr#5449
+#   refresh: 0d
+#   components: [network, wifi]
+
 esp8266:
   board: nodemcuv2
 
@@ -38,7 +43,7 @@ ota:
 # 5	          D1	
 
 sensor:
-  - <<: !include .commonSensor8266.yaml
+  - <<: !include .commonSensor.yaml
 
   - platform: homeassistant
     name: "Glucose"
@@ -58,20 +63,20 @@ sensor:
 
 i2c:
 
-display:
-  - platform: lcd_pcf8574
-    address: 0x27
-    dimensions: 16x2
-    id: lcd
-    lambda: |-
-      it.printf("%.1f%cF %.0f mg/dL%.1f%%", (id(temp).state)*9.0/5.0+32.0, 0xDF, id(tmrglucose).state, id(humid).state);
+# display:
+#   - platform: lcd_pcf8574
+#     address: 0x27
+#     dimensions: 16x2
+#     id: lcd
+#     lambda: |-
+#       it.printf("%.1f%cF %.0f mg/dL%.1f%%", (id(temp).state)*9.0/5.0+32.0, 0xDF, id(tmrglucose).state, id(humid).state);
 
-switch:
-  - platform: template
-    name: "$devicename Backlight"
-    id: backlight_switch
-    assumed_state: True
-    turn_on_action:
-      - lambda: "id(lcd).backlight(); id(backlight_switch).publish_state(true);"
-    turn_off_action:
-      - lambda: "id(lcd).no_backlight(); id(backlight_switch).publish_state(false);"
+# switch:
+#   - platform: template
+#     name: "$devicename Backlight"
+#     id: backlight_switch
+#     assumed_state: True
+#     turn_on_action:
+#       - lambda: "id(lcd).backlight(); id(backlight_switch).publish_state(true);"
+#     turn_off_action:
+#       - lambda: "id(lcd).no_backlight(); id(backlight_switch).publish_state(false);"

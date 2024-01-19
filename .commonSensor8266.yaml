@@ -1,4 +1,0 @@
-  - platform: uptime
-    name: $devicename Uptime
-  - platform: wifi_signal
-    name: "$devicename WiFi Signal Sensor"
