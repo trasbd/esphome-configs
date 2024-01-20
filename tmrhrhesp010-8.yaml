@@ -1,0 +1,67 @@
+substitutions:
+  deviceNumber: "10"
+  devicename: tmrhrhesp0$deviceNumber
+  deviceIP: 192.168.86.2$deviceNumber
+
+esphome:
+  name: $devicename
+  comment: Bedroom
+
+# external_components:
+#   source: github://pr#5449
+#   refresh: 0d
+#   components: [network, wifi]
+
+esp8266:
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "m9vGPXDYrizWz7Ci4jFJzwaxzAAJ29VMOTZZWa5CnpM="
+
+ota:
+  password: "59287d54ef9d3246645016acd81e4783"
+
+<<: !include .common.yaml
+
+# light:
+#   - platform: status_led
+#     name: "TMRHRHESP008 Status LED"
+#     pin:
+#       number: 2
+#       inverted: True
+# Config Pin	Board Pin	
+# 0	          D3	
+# 1	          TX	
+# 2	          D4	Built-In LED (Inverse)
+# 3	          RX	
+# 4	          D2	
+# 5	          D1	
+
+sensor:
+  - <<: !include .commonSensor.yaml
+
+  - platform: mpu6050
+    address: 0x68
+    accel_x:
+      name: "MPU6050 Accel X"
+    accel_y:
+      name: "MPU6050 Accel Y"
+    accel_z:
+      name: "MPU6050 Accel z"
+    gyro_x:
+      name: "MPU6050 Gyro X"
+    gyro_y:
+      name: "MPU6050 Gyro Y"
+    gyro_z:
+      name: "MPU6050 Gyro z"
+    temperature:
+      name: "MPU6050 Temperature"
+
+i2c:
+  sda: GPIO14
+  scl: GPIO12
