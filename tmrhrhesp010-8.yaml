@@ -63,5 +63,5 @@ sensor:
       name: "MPU6050 Temperature"
 
 i2c:
-  sda: GPIO14
-  scl: GPIO12
+  sda: GPIO4
+  scl: GPIO5
