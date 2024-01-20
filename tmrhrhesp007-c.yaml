@@ -5,12 +5,12 @@ esphome:
 # https://github.com/esphome/esphome.git#2022.10.1
 
 esp32:
-  board: esp32cam
+  board: esp32dev
   framework:
     type: arduino
 
 # Enable logging
-#logger:
+logger:
 
 # Enable Home Assistant API
 api:
@@ -20,8 +20,8 @@ api:
 ota:
   password: "eff289fc1940e92b40d2c6cc41ba717a"
 
-network:
-    enable_ipv6: true
+# network:
+#     enable_ipv6: true
 
 wifi:
   ssid: !secret wifi_ssid
@@ -31,6 +31,7 @@ wifi:
     static_ip: 192.168.86.207
     gateway: 192.168.86.1
     subnet: 255.255.255.0
+    dns1: 192.168.86.45
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
 #   ap:
