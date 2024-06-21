@@ -25,7 +25,8 @@ api:
     key: "Cp2uuQuMI5OwQz9f3lCVCVlcSxRs2xVFEQ8eco+fr2g="
 
 ota:
-  password: "dd5fd5476b463df710388c16d7a3d155"
+  - platform: esphome
+    password: "dd5fd5476b463df710388c16d7a3d155"
 
 network:
     enable_ipv6: true

@@ -24,7 +24,8 @@ api:
     key: "m9vGPXDYrizWz7Ci4jFJzwaxzAAJ29VMOTZZWa5CnpM="
 
 ota:
-  password: "59287d54ef9d3246645016acd81e4783"
+  - platform: esphome
+    password: "59287d54ef9d3246645016acd81e4783"
 
 <<: !include .common.yaml
 

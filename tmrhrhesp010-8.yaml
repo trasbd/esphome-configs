@@ -5,7 +5,7 @@ substitutions:
 
 esphome:
   name: $devicename
-  comment: Bedroom
+  comment: Equinox
 
 # external_components:
 #   source: github://pr#5449
@@ -45,23 +45,8 @@ ota:
 sensor:
   - <<: !include .commonSensor.yaml
 
-  - platform: mpu6050
-    address: 0x68
-    accel_x:
-      name: "MPU6050 Accel X"
-    accel_y:
-      name: "MPU6050 Accel Y"
-    accel_z:
-      name: "MPU6050 Accel z"
-    gyro_x:
-      name: "MPU6050 Gyro X"
-    gyro_y:
-      name: "MPU6050 Gyro Y"
-    gyro_z:
-      name: "MPU6050 Gyro z"
-    temperature:
-      name: "MPU6050 Temperature"
 
-i2c:
-  sda: GPIO4
-  scl: GPIO5
+switch:
+  - platform: gpio
+    pin: 0
+    name: "Key Power"
