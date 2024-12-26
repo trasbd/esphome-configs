@@ -24,7 +24,8 @@ api:
     key: "m9vGPXDYrizWz7Ci4jFJzwaxzAAJ29VMOTZZWa5CnpM="
 
 ota:
-  password: "59287d54ef9d3246645016acd81e4783"
+  - platform: esphome
+    password: "59287d54ef9d3246645016acd81e4783"
 
 <<: !include .common.yaml
 
@@ -45,8 +46,20 @@ ota:
 sensor:
   - <<: !include .commonSensor.yaml
 
+  - platform: pulse_counter
+    pin: D1
+    name: "Pulse Counter"
+    update_interval: 5s
+    filters:
+    - lambda: return (x / 27.0) * 60.0;
+    unit_of_measurement: "L/hr"  
 
-switch:
-  - platform: gpio
-    pin: 0
-    name: "Key Power"
+  
+
+
+# switch:
+#   - platform: gpio
+#     pin: 0
+#     name: "Key Power"
+
+
