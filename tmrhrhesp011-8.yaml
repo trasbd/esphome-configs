@@ -1,0 +1,57 @@
+substitutions:
+  deviceNumber: "11"
+  devicename: tmrhrhesp0$deviceNumber
+  deviceIP: 192.168.86.2$deviceNumber
+
+esphome:
+  name: $devicename
+  comment: "Washer"
+
+
+esp8266:
+  board: esp01_1m
+
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "2d4ERfG1Tjofqwfj6FuPRRgbjqe+zzso5xuuhpXoqes="
+
+ota:
+  - platform: esphome
+    password: "f5ff6fe7ce2a02b7d9e1982b21a3628a"
+
+<<: !include .common.yaml
+    
+i2c:
+  sda: GPIO4
+  scl: GPIO5
+  scan: true
+  id: db_busa
+  
+ads1115:
+  #  continuous_mode : on
+ - address: 0x48
+   id: ads1115_48
+   continuous_mode: on
+  
+sensor:
+  - name: "Akku 01"
+    id: ads1115_48_a0
+    ads1115_id: ads1115_48
+    multiplexer: 'A0_A1'
+    gain: 1.024
+    platform: ads1115
+    unit_of_measurement: "mA"
+    icon: "mdi:gauge"
+    accuracy_decimals: 4
+    update_interval: 1s
+    # filters:
+    #   - calibrate_linear:
+    #     - 0 -> 0
+    #     - 0.133875 -> 3.433
+    #     - 0.23194 -> 5.547
+    #     - 0.71 -> 12.61
