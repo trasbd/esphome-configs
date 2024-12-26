@@ -43,13 +43,14 @@ sensor:
     id: ads1115_48_a0
     ads1115_id: ads1115_48
     multiplexer: 'A0_A1'
-    gain: 1.024
+    gain: 6.144
     platform: ads1115
     unit_of_measurement: "mA"
     icon: "mdi:gauge"
     accuracy_decimals: 4
-    update_interval: 1s
-    # filters:
+    update_interval: 5s
+    filters:
+    - multiply: !lambda return 100;
     #   - calibrate_linear:
     #     - 0 -> 0
     #     - 0.133875 -> 3.433
