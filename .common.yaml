@@ -14,7 +14,7 @@ wifi:
   manual_ip:
      static_ip: $deviceIP
      gateway: 192.168.86.1
-     subnet: 255.255.255.0
+     subnet: 255.255.0.0
      dns1: 192.168.86.46
 
   #use_address: 192.168.86.113
