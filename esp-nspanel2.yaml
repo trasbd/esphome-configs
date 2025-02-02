@@ -51,6 +51,12 @@ button:
   - platform: restart
     name: Restart $device_name
 
+  - platform: ttemplate
+    name: "rtttl Song"
+    id: rtttl_song_button
+    on_click:
+      - rtttl.play: "twobits:d=4,o=5,b=220:c6,8g,8g,a,g,p,b,c6"
+
 # Define some inputs
 binary_sensor:
   - platform: gpio
@@ -199,4 +205,4 @@ display:
             id(disp1).set_component_text_printf(
               "temp", "%.1f ""\xb0""F", id(current_temperature).state
             );
-        - rtttl.play: 'siren:d=8,o=5,b=100:d,e,d,e,d,e,d,e'
+        - button.press: rtttl_song_button
