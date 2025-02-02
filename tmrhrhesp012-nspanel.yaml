@@ -1,7 +1,10 @@
 # Set some variables for convenience
 substitutions:
-  node_name: nspanel-demo
-  device_name: Demo NSPanel
+  deviceNumber: "12"
+  devicename: tmrhrhesp0$deviceNumber
+  deviceIP: 192.168.86.2$deviceNumber
+  node_name: $devicename
+  device_name: $devicename
 
 esphome:
   name: $node_name
@@ -19,7 +22,7 @@ wifi:
   password: !secret wifi_password
 
   manual_ip:
-     static_ip: 192.168.86.139
+     static_ip: $deviceIP
      gateway: 192.168.86.1
      subnet: 255.255.0.0
      dns1: 192.168.86.46
@@ -46,15 +49,18 @@ api:
       then:
         - lambda: 'id(disp1)->upload_tft();'
 
+web_server:
+  port: 80
+
 # A reboot button is always useful
 button:
   - platform: restart
     name: Restart $device_name
 
-  - platform: ttemplate
+  - platform: template
     name: "rtttl Song"
     id: rtttl_song_button
-    on_click:
+    on_press:
       - rtttl.play: "twobits:d=4,o=5,b=220:c6,8g,8g,a,g,p,b,c6"
 
 # Define some inputs
