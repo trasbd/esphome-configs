@@ -43,15 +43,13 @@ sensor:
     ble_client_id: scale
     name: "Weight"
     service_uuid: '181D'
-    characteristic_uuid: '00002A9C-0000-1000-8000-00805F9B34FB'
+    characteristic_uuid: '00002A9D-0000-1000-8000-00805F9B34FB'
+    descriptor_uuid: '2902'
     update_interval: 1s
+    notify: True
+    on_notify: 
+      then:
+        lambda: |-
+          ESP_LOGD("custom", "This is a custom debug message");
     #icon: 'mdi:battery'
     #unit_of_measurement: '%'
-  - platform: ble_client
-    type: characteristic
-    ble_client_id: scale
-    name: "Composition"
-    service_uuid: '181B'
-    characteristic_uuid: '00002A9C-0000-1000-8000-00805F9B34FB'
-    update_interval: 1s
-
