@@ -37,6 +37,8 @@ ota:
 
 # Enable Home Assistant API
 api:
+  encryption:
+    key: "2d4ERfG1Tjofqwfj6FuPRRgbjqe+zzso5xuuhpXoqes="
   services:
     # Service to play a song
     - service: play_rtttl
@@ -47,15 +49,20 @@ api:
             rtttl: !lambda 'return song_str;'
     - service: upload_tft
       then:
-        - lambda: 'id(disp1)->upload_tft();'
-
-web_server:
-  port: 80
+        - button.press: tft_upload
 
 # A reboot button is always useful
 button:
   - platform: restart
     name: Restart $device_name
+
+  - platform: template
+    name: "TFT Upload"
+    id: tft_upload
+    on_press: 
+      then:
+        - lambda: 'id(disp1)->upload_tft();'
+            
 
   - platform: template
     name: "rtttl Song"
@@ -80,26 +87,6 @@ binary_sensor:
       inverted: true
     on_click:
       - switch.toggle: relay_2
-  
-  - platform: nextion
-    name: $device_name Play Button
-    page_id: 0
-    component_id: 2
-
-  - platform: nextion
-    name: $device_name On Button
-    page_id: 0
-    component_id: 3
-
-  - platform: nextion
-    name: $device_name Off Button
-    page_id: 0
-    component_id: 4
-
-  - platform: nextion
-    name: $device_name Red Button
-    page_id: 0
-    component_id: 6
 
 sensor:
   - platform: wifi_signal
@@ -114,6 +101,10 @@ sensor:
       reference_temperature: 25°C
       reference_resistance: 10kOhm
     name: $device_name Temperature
+    on_value:
+      # Push it to the display
+      then:
+        - lambda: 'id(disp1).set_component_text_printf("txtInsideTemp", "\x09""%.1f""\xb0""F", (x*9/5)+32);'
 
   - platform: resistance
     id: resistance_sensor
@@ -135,7 +126,19 @@ sensor:
     on_value:
       # Push it to the display
       then:
-        - lambda: 'id(disp1).set_component_text_printf("temp", "%.1f ""\xb0""F", x);'
+        - lambda: |-
+            id(disp1).set_component_text_printf("txtOutsideTemp", "%.0f""\xb0""F", x);
+            
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    on_time:
+      - seconds: 0
+        minutes: /1
+        then:
+          - lambda: |-
+              id(disp1).set_component_text_printf("txtTime", "%02i:%02i", id(homeassistant_time).now().hour, id(homeassistant_time).now().minute);
 
 # Define some outputs
 switch:
@@ -159,6 +162,31 @@ switch:
       number: 4
       inverted: true
     restore_mode: ALWAYS_ON
+
+  #-------------------------------------------------
+  # Left switch state (from panel)
+  #-------------------------------------------------  
+  - platform: nextion
+    internal: true
+    id: left_switch_state_panel
+    component_name: btnLightLeft
+    on_turn_on:
+      - switch.turn_on: relay_1
+    on_turn_off:
+      - switch.turn_off: relay_1
+        
+  #-------------------------------------------------
+  # Right switch state (from panel)
+  #-------------------------------------------------  
+  - platform: nextion
+    internal: true
+    id: right_switch_state_panel
+    component_name: btnLightRight
+    on_turn_on:
+      - switch.turn_on: relay_2
+    on_turn_off:
+      - switch.turn_off: relay_2
+        
 
 number:
   platform: template
@@ -208,7 +236,136 @@ display:
         - lambda: |-
             id(disp1).send_command_printf("DRAKJHSUYDGBNCJHGJKSHBDN");
             id(disp1).send_command_printf("page main");
-            id(disp1).set_component_text_printf(
-              "temp", "%.1f ""\xb0""F", id(current_temperature).state
-            );
+            id(disp1).set_component_text_printf("main.btnLightLeft","%s", "Fan (15min)");
+            id(disp1).set_component_text_printf("main.btnLightRight","%s", "Light");
         - button.press: rtttl_song_button
+
+text_sensor:
+
+  #-------------------------------------------------
+  # Left switch entity updates (From home assistant)
+  #-------------------------------------------------
+  - platform: homeassistant
+    internal: true
+    entity_id: switch.tmrhrhesp012_relay_1
+    id: left_switch_state_ha
+    on_value:
+      then:
+        - lambda: |-
+            if(x=="on") {
+              id(disp1).send_command_printf("main.btnLightLeft.val=1");
+            } else {
+              id(disp1).send_command_printf("main.btnLightLeft.val=0");
+            }
+
+  #-------------------------------------------------
+  # Right switch entity updates (From home assistant)
+  #-------------------------------------------------
+  - platform: homeassistant
+    internal: true
+    entity_id: switch.tmrhrhesp012_relay_2
+    id: right_switch_state_ha
+    on_value:
+      then:
+        - lambda: |-
+            if(x=="on") {
+              id(disp1).send_command_printf("main.btnLightRight.val=1");
+            } else {
+              id(disp1).send_command_printf("main.btnLightRight.val=0");
+            }
+
+  #-------------------------------------------------
+  # Sun state (From home assistant)
+  #-------------------------------------------------
+  - platform: homeassistant
+    id: sun_state
+    entity_id: sun.sun
+    on_value:
+      then:
+        - script.execute: update_weather_icon
+            
+
+
+  #-------------------------------------------------
+  # Weather symbol (From home assistant)
+  #-------------------------------------------------
+  - platform: homeassistant
+    id: weather_symbol
+    entity_id: weather.home
+    on_value:
+      then:
+        - script.execute: update_weather_icon
+
+
+
+#####################################################################
+#
+# Scripts
+#
+#####################################################################
+script:
+  id: update_weather_icon
+  
+  then:
+    - lambda: |-
+        
+        int icon_id=39; /// unknown state
+        
+        if(id(weather_symbol).state == "clear-night") {
+          icon_id=26;
+          
+        } else if(id(weather_symbol).state == "cloudy") {
+          icon_id=27;
+          
+        } if(id(weather_symbol).state == "exceptional") {
+          icon_id=28;
+          
+        } if(id(weather_symbol).state == "fog") {
+          icon_id=29;
+          
+        } if(id(weather_symbol).state == "hail") {
+          icon_id=30;
+          
+        } if(id(weather_symbol).state == "lightning") {
+          icon_id=31;
+          
+        } if(id(weather_symbol).state == "lightning-rainy") {
+          icon_id=32;
+          
+        } if(id(weather_symbol).state == "partlycloudy") {
+          if(id(sun_state).state == "below_horizon") {
+            icon_id=42;
+          } else {
+            icon_id=33;
+          }
+          
+        } if(id(weather_symbol).state == "pouring") {
+          icon_id=34;
+          
+        } if(id(weather_symbol).state == "rainy") {
+          icon_id=35;
+          
+        } if(id(weather_symbol).state == "snowy") {
+          icon_id=36;
+          
+        } if(id(weather_symbol).state == "snowy-rainy") {
+          icon_id=37;
+          
+        } if(id(weather_symbol).state == "sunny") {
+          if(id(sun_state).state == "below_horizon") {
+            icon_id=26;
+            
+          } else {
+            icon_id=38; 
+          }
+          
+        } if(id(weather_symbol).state == "windy") {
+          icon_id=40;
+          
+        } if(id(weather_symbol).state == "windy-variant") {
+          icon_id=41;
+        }
+        
+        id(disp1).send_command_printf("main.picWeatherIcon.pic=%i", icon_id);
+        id(disp1).send_command_printf("selectFanSpeed.picWeatherIcon.pic=%i", icon_id);
+        id(disp1).send_command_printf("selectMode.picWeatherIcon.pic=%i", icon_id);      
