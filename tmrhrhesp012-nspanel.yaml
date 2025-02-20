@@ -26,6 +26,10 @@ wifi:
      gateway: 192.168.86.1
      subnet: 255.255.0.0
      dns1: 192.168.86.46
+     
+web_server:
+  port: 80
+  include_internal: True
 
 # Enable logging
 logger:
@@ -78,7 +82,7 @@ binary_sensor:
       number: 14
       inverted: true
     on_click:
-      - switch.toggle: relay_1
+      - switch.toggle: left_switch_state_panel
 
   - platform: gpio
     name: $device_name Right Button
@@ -86,7 +90,9 @@ binary_sensor:
       number: 27
       inverted: true
     on_click:
-      - switch.toggle: relay_2
+      - switch.toggle: right_switch_state_panel
+
+
 
 sensor:
   - platform: wifi_signal
@@ -104,7 +110,9 @@ sensor:
     on_value:
       # Push it to the display
       then:
-        - lambda: 'id(disp1).set_component_text_printf("txtInsideTemp", "\x09""%.1f""\xb0""F", (x*9/5)+32);'
+        - lambda: |-
+            id(disp1).set_component_text_printf("main.txtInsideTemp", "\x09""%.1f""\xb0""F", (x*9/5)+32);
+            
 
   - platform: resistance
     id: resistance_sensor
@@ -127,7 +135,17 @@ sensor:
       # Push it to the display
       then:
         - lambda: |-
-            id(disp1).set_component_text_printf("txtOutsideTemp", "%.0f""\xb0""F", x);
+            id(disp1).set_component_text_printf("main.txtOutsideTemp", "%.0f""\xb0""F", x);
+
+  - platform: nextion
+    id: cat_button
+    internal: False
+    component_id: 7
+    on_value: 
+      then:
+      - rtttl.play: "Titanic:d=8,o=6,b=120,b=120:c,d,2e.,d,c,d,g,2g,f,e,4c,2a5,g5,f5,16d5,16e5,2d5,p,c,d,2e.,d,c,d,g,2g,e,g,2a,2g,16d,16e,2d."
+#      - rtttl.play: "Entertainer:d=8,o=5,b=140,b=140:d,d#,e,4c6,e,4c6,e,2c6.,c6,d6,d#6,e6,c6,d6,4e6,b,4d6,2c6,4p,d,d#,e,4c6,e,4c6,e,2c6.,p,a,g,f#,a,c6,4e6,d6,c6,a,2d6"
+        
             
 
 time:
@@ -138,22 +156,23 @@ time:
         minutes: /1
         then:
           - lambda: |-
-              id(disp1).set_component_text_printf("txtTime", "%02i:%02i", id(homeassistant_time).now().hour, id(homeassistant_time).now().minute);
+              id(disp1).set_component_text_printf("main.txtTime", "%02i:%02i", id(homeassistant_time).now().hour, id(homeassistant_time).now().minute);
 
 # Define some outputs
-switch:
-  # The two relays
-  - platform: gpio
-    name: $device_name Relay 1
-    id: relay_1
-    pin:
-      number: 22
-  - platform: gpio
-    name: $device_name Relay 2
-    id: relay_2
-    pin:
-      number: 19
 
+fan:
+  - platform: binary
+    output: relay_1_output
+    id: relay_1
+    name: $device_name Bedroom Ceiling Fan
+
+light:
+  - platform: binary
+    output: relay_2_output
+    id: relay_2
+    name: $device_name Bedroom Ceiling Light
+
+switch:
   # Pin 4 always needs to be on to power up the display
   - platform: gpio
     id: screen_power
@@ -171,9 +190,9 @@ switch:
     id: left_switch_state_panel
     component_name: btnLightLeft
     on_turn_on:
-      - switch.turn_on: relay_1
+      - fan.turn_on: relay_1
     on_turn_off:
-      - switch.turn_off: relay_1
+      - fan.turn_off: relay_1
         
   #-------------------------------------------------
   # Right switch state (from panel)
@@ -183,10 +202,9 @@ switch:
     id: right_switch_state_panel
     component_name: btnLightRight
     on_turn_on:
-      - switch.turn_on: relay_2
+      - light.turn_on: relay_2
     on_turn_off:
-      - switch.turn_off: relay_2
-        
+      - light.turn_off: relay_2
 
 number:
   platform: template
@@ -198,7 +216,8 @@ number:
   max_value: 100
   step: 1
   initial_value: 30
-  set_action:
+  optimistic: True
+  on_value:
     then:
       - lambda: 'id(disp1).set_backlight_brightness(x/100);'
 
@@ -208,6 +227,17 @@ output:
     id: buzzer_out
     pin:
       number: 21
+
+  # The two relays
+  - platform: gpio
+    id: relay_1_output
+    pin:
+      number: 22
+
+  - platform: gpio
+    id: relay_2_output
+    pin:
+      number: 19
 
 # Enable ringtone music support
 rtttl:
@@ -236,9 +266,18 @@ display:
         - lambda: |-
             id(disp1).send_command_printf("DRAKJHSUYDGBNCJHGJKSHBDN");
             id(disp1).send_command_printf("page main");
-            id(disp1).set_component_text_printf("main.btnLightLeft","%s", "Fan (15min)");
-            id(disp1).set_component_text_printf("main.btnLightRight","%s", "Light");
+            id(disp1).set_component_text_printf("btnLightLeft","%s", "Fan (15min)");
+            id(disp1).set_component_text_printf("btnLightRight","%s", "Light");
         - button.press: rtttl_song_button
+    on_page:
+      then:
+        lambda: |-
+          switch (x) {
+            case 0x02: // wifi_qr_page
+              // Manually trigger update for controls on page 0x02 here
+              
+              break;
+          }
 
 text_sensor:
 
@@ -247,15 +286,17 @@ text_sensor:
   #-------------------------------------------------
   - platform: homeassistant
     internal: true
-    entity_id: switch.tmrhrhesp012_relay_1
+    entity_id: fan.tmrhrhesp012_bedroom_ceiling_fan
     id: left_switch_state_ha
     on_value:
       then:
         - lambda: |-
             if(x=="on") {
-              id(disp1).send_command_printf("main.btnLightLeft.val=1");
+              //id(disp1).send_command_printf("btnLightLeft.val=1");
+              id(left_switch_state_panel).turn_on();
             } else {
-              id(disp1).send_command_printf("main.btnLightLeft.val=0");
+              //id(disp1).send_command_printf("btnLightLeft.val=0");
+              id(left_switch_state_panel).turn_off();
             }
 
   #-------------------------------------------------
@@ -263,15 +304,18 @@ text_sensor:
   #-------------------------------------------------
   - platform: homeassistant
     internal: true
-    entity_id: switch.tmrhrhesp012_relay_2
+    entity_id: light.tmrhrhesp012_bedroom_ceiling_light
     id: right_switch_state_ha
     on_value:
       then:
         - lambda: |-
             if(x=="on") {
-              id(disp1).send_command_printf("main.btnLightRight.val=1");
+              //id(disp1).send_command_printf("btnLightRight.val=1");
+              id(right_switch_state_panel).turn_on();
+              
             } else {
-              id(disp1).send_command_printf("main.btnLightRight.val=0");
+              //id(disp1).send_command_printf("btnLightRight.val=0");
+              id(right_switch_state_panel).turn_off();
             }
 
   #-------------------------------------------------
@@ -298,6 +342,15 @@ text_sensor:
 
 
 
+  - platform: template
+    update_interval: 5s
+    name: IP Address
+    internal: True
+    lambda: |-
+      id(disp1).set_component_text_printf("about.static_ip", "%s", WiFi.localIP().toString().c_str());
+      return {WiFi.localIP().toString().c_str()};
+
+
 #####################################################################
 #
 # Scripts
@@ -308,62 +361,63 @@ script:
   
   then:
     - lambda: |-
-        
-        int icon_id=39; /// unknown state
+
+        int imgOffset = 0; //22
+        int icon_id=imgOffset+17; /// unknown state
         
         if(id(weather_symbol).state == "clear-night") {
-          icon_id=26;
+          icon_id=imgOffset+4;
           
         } else if(id(weather_symbol).state == "cloudy") {
-          icon_id=27;
+          icon_id=imgOffset+5;
           
         } if(id(weather_symbol).state == "exceptional") {
-          icon_id=28;
+          icon_id=imgOffset+6;
           
         } if(id(weather_symbol).state == "fog") {
-          icon_id=29;
+          icon_id=imgOffset+7;
           
         } if(id(weather_symbol).state == "hail") {
-          icon_id=30;
+          icon_id=imgOffset+8;
           
         } if(id(weather_symbol).state == "lightning") {
-          icon_id=31;
+          icon_id=imgOffset+9;
           
         } if(id(weather_symbol).state == "lightning-rainy") {
-          icon_id=32;
+          icon_id=imgOffset+10;
           
         } if(id(weather_symbol).state == "partlycloudy") {
           if(id(sun_state).state == "below_horizon") {
-            icon_id=42;
+            icon_id=imgOffset+20;
           } else {
-            icon_id=33;
+            icon_id=imgOffset+11;
           }
           
         } if(id(weather_symbol).state == "pouring") {
-          icon_id=34;
+          icon_id=imgOffset+12;
           
         } if(id(weather_symbol).state == "rainy") {
-          icon_id=35;
+          icon_id=imgOffset+13;
           
         } if(id(weather_symbol).state == "snowy") {
-          icon_id=36;
+          icon_id=imgOffset+14;
           
         } if(id(weather_symbol).state == "snowy-rainy") {
-          icon_id=37;
+          icon_id=imgOffset+15;
           
         } if(id(weather_symbol).state == "sunny") {
           if(id(sun_state).state == "below_horizon") {
-            icon_id=26;
+            icon_id=imgOffset+4;
             
           } else {
-            icon_id=38; 
+            icon_id=imgOffset+16; 
           }
           
         } if(id(weather_symbol).state == "windy") {
-          icon_id=40;
+          icon_id=imgOffset+18;
           
         } if(id(weather_symbol).state == "windy-variant") {
-          icon_id=41;
+          icon_id=imgOffset+19;
         }
         
         id(disp1).send_command_printf("main.picWeatherIcon.pic=%i", icon_id);
