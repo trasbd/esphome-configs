@@ -9,6 +9,7 @@ substitutions:
 esphome:
   name: $node_name
   comment: $device_name
+  build_path: "../config/esphome/.esphome/${device_name}"
   on_boot:
     priority: 601
     then:
@@ -29,7 +30,8 @@ wifi:
      
 web_server:
   port: 80
-  include_internal: True
+  version: 3
+  
 
 # Enable logging
 logger:
@@ -63,6 +65,7 @@ button:
   - platform: template
     name: "TFT Upload"
     id: tft_upload
+    entity_category: config
     on_press: 
       then:
         - lambda: 'id(disp1)->upload_tft();'
@@ -73,6 +76,10 @@ button:
     id: rtttl_song_button
     on_press:
       - rtttl.play: "twobits:d=4,o=5,b=220:c6,8g,8g,a,g,p,b,c6"
+
+
+
+
 
 # Define some inputs
 binary_sensor:
@@ -92,6 +99,18 @@ binary_sensor:
     on_click:
       - switch.toggle: right_switch_state_panel
 
+  - platform: nextion
+    internal: false
+    id: cat_binary
+    name: Cat Binary Sensor
+    page_id: 1
+    component_id: 7
+    #component_name: btnCat
+    on_press:
+      then:
+      - rtttl.play: "Titanic:d=8,o=6,b=120,b=120:c,d,2e.,d,c,d,g,2g,f,e,4c,2a5,g5,f5,16d5,16e5,2d5,p,c,d,2e.,d,c,d,g,2g,e,g,2a,2g,16d,16e,2d."
+#      - rtttl.play: "Entertainer:d=8,o=5,b=140,b=140:d,d#,e,4c6,e,4c6,e,2c6.,c6,d6,d#6,e6,c6,d6,4e6,b,4d6,2c6,4p,d,d#,e,4c6,e,4c6,e,2c6.,p,a,g,f#,a,c6,4e6,d6,c6,a,2d6"
+    
 
 
 sensor:
@@ -135,18 +154,18 @@ sensor:
       # Push it to the display
       then:
         - lambda: |-
-            id(disp1).set_component_text_printf("main.txtOutsideTemp", "%.0f""\xb0""F", x);
+            id(disp1).set_component_text_printf("main.txtOutsideTemp", "%.0f""\xb0""F", x);    
 
   - platform: nextion
-    id: cat_button
-    internal: False
-    component_id: 7
+    component_name: h0
+    id: brightness_slider
     on_value: 
       then:
-      - rtttl.play: "Titanic:d=8,o=6,b=120,b=120:c,d,2e.,d,c,d,g,2g,f,e,4c,2a5,g5,f5,16d5,16e5,2d5,p,c,d,2e.,d,c,d,g,2g,e,g,2a,2g,16d,16e,2d."
-#      - rtttl.play: "Entertainer:d=8,o=5,b=140,b=140:d,d#,e,4c6,e,4c6,e,2c6.,c6,d6,d#6,e6,c6,d6,4e6,b,4d6,2c6,4p,d,d#,e,4c6,e,4c6,e,2c6.,p,a,g,f#,a,c6,4e6,d6,c6,a,2d6"
-        
+        - number.set:
+            id: brightness
+            value: !lambda return x;
             
+
 
 time:
   - platform: homeassistant
@@ -206,20 +225,24 @@ switch:
     on_turn_off:
       - light.turn_off: relay_2
 
+
+
 number:
-  platform: template
-  name: $device_name Brightness
-  id: brightness
-  entity_category: config
-  unit_of_measurement: '%'
-  min_value: 0
-  max_value: 100
-  step: 1
-  initial_value: 30
-  optimistic: True
-  on_value:
-    then:
-      - lambda: 'id(disp1).set_backlight_brightness(x/100);'
+  - platform: template
+    name: $device_name Brightness
+    id: brightness
+    entity_category: config
+    unit_of_measurement: '%'
+    min_value: 0
+    max_value: 100
+    step: 1
+    initial_value: 30
+    optimistic: True
+    on_value:
+      then:
+        - lambda: |- 
+            id(disp1).set_backlight_brightness(x/100);
+            id(disp1).set_component_value("about.h0", x);
 
 # Configure the internal bleeper
 output:
@@ -262,20 +285,21 @@ display:
       then:
         - number.set:
             id: brightness
-            value: 30
+            value: 75
         - lambda: |-
             id(disp1).send_command_printf("DRAKJHSUYDGBNCJHGJKSHBDN");
             id(disp1).send_command_printf("page main");
-            id(disp1).set_component_text_printf("btnLightLeft","%s", "Fan (15min)");
+            id(disp1).set_component_text_printf("btnLightLeft","%s", "Fan");
             id(disp1).set_component_text_printf("btnLightRight","%s", "Light");
-        - button.press: rtttl_song_button
+            id(disp1).set_component_text_printf("about.txtNode", "%s", App.get_name().c_str());
+            
+#        - button.press: rtttl_song_button
     on_page:
       then:
         lambda: |-
           switch (x) {
             case 0x02: // wifi_qr_page
               // Manually trigger update for controls on page 0x02 here
-              
               break;
           }
 
@@ -340,16 +364,14 @@ text_sensor:
       then:
         - script.execute: update_weather_icon
 
-
-
-  - platform: template
-    update_interval: 5s
-    name: IP Address
-    internal: True
-    lambda: |-
-      id(disp1).set_component_text_printf("about.static_ip", "%s", WiFi.localIP().toString().c_str());
-      return {WiFi.localIP().toString().c_str()};
-
+  - platform: wifi_info
+    ip_address: 
+      id: ip_address
+      on_value: 
+        then:
+        - lambda: |-
+              id(disp1).set_component_text_printf("about.static_ip", "%s", WiFi.localIP().toString().c_str());
+      
 
 #####################################################################
 #
