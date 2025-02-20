@@ -113,6 +113,7 @@ binary_sensor:
     
 
 
+
 sensor:
   - platform: wifi_signal
     name: $device_name WiFi Signal
@@ -226,6 +227,11 @@ switch:
       - light.turn_off: relay_2
 
 
+  - platform: nextion
+    name: Red Button
+    component_name: bt0
+
+
 
 number:
   - platform: template
@@ -279,7 +285,7 @@ display:
   - platform: nextion
     id: disp1
     uart_id: tf_uart
-    tft_url: http://homeassistant.local:8123/local/bathroom.tft
+    tft_url: http://homeassistant.local:8123/local/${devicename}.tft
     # A little fun...
     on_setup:
       then:
